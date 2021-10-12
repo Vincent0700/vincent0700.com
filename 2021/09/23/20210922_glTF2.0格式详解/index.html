@@ -1,0 +1,404 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"><meta><title>glTF 2.0 格式详解 - HORIZON</title><link rel="manifest" href="/manifest.json"><meta name="application-name" content="HORIZON"><meta name="msapplication-TileImage" content="/img/favicon.svg"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="HORIZON"><meta name="apple-mobile-web-app-status-bar-style" content="default"><meta name="description" content="glTF 全称 GL Transmission Format，是由现有 OpenGL 的维护组织 Khronos 推出的一种 3D 数据传输格式，常用于 WebGL 和 OpenGL。"><meta property="og:type" content="article"><meta property="og:title" content="glTF 2.0 格式详解"><meta property="og:url" content="https://vincent0700.com/2021/09/23/20210922_glTF2.0%E6%A0%BC%E5%BC%8F%E8%AF%A6%E8%A7%A3/"><meta property="og:site_name" content="HORIZON"><meta property="og:description" content="glTF 全称 GL Transmission Format，是由现有 OpenGL 的维护组织 Khronos 推出的一种 3D 数据传输格式，常用于 WebGL 和 OpenGL。"><meta property="og:locale" content="en_US"><meta property="og:image" content="https://vincent0700.com/static/posts/20210922_glTF2.0%E6%A0%BC%E5%BC%8F%E8%AF%A6%E8%A7%A3/struct.png"><meta property="article:published_time" content="2021-09-23T15:00:00.000Z"><meta property="article:modified_time" content="2021-10-12T17:30:23.108Z"><meta property="article:tag" content="WebGL"><meta property="twitter:card" content="summary"><meta property="twitter:image" content="/static/posts/20210922_glTF2.0%E6%A0%BC%E5%BC%8F%E8%AF%A6%E8%A7%A3/struct.png"><script type="application/ld+json">{"@context":"https://schema.org","@type":"BlogPosting","mainEntityOfPage":{"@type":"WebPage","@id":"https://vincent0700.com/2021/09/23/20210922_glTF2.0%E6%A0%BC%E5%BC%8F%E8%AF%A6%E8%A7%A3/"},"headline":"HORIZON","image":["https://vincent0700.com/static/posts/20210922_glTF2.0%E6%A0%BC%E5%BC%8F%E8%AF%A6%E8%A7%A3/struct.png"],"datePublished":"2021-09-23T15:00:00.000Z","dateModified":"2021-10-12T17:30:23.108Z","author":{"@type":"Person","name":null},"description":"glTF 全称 GL Transmission Format，是由现有 OpenGL 的维护组织 Khronos 推出的一种 3D 数据传输格式，常用于 WebGL 和 OpenGL。"}</script><link rel="canonical" href="https://vincent0700.com/2021/09/23/20210922_glTF2.0%E6%A0%BC%E5%BC%8F%E8%AF%A6%E8%A7%A3/"><link rel="icon" href="/img/favicon.svg"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/font-awesome/5.12.0/css/all.min.css"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/highlight.js/9.12.0/styles/pojoaque.min.css"><link rel="stylesheet" href="https://fonts.loli.net/css2?family=Oxanium:wght@300;400;600&amp;family=Roboto+Mono"><link rel="stylesheet" href="/css/cyberpunk.css"><style>body>.footer,body>.navbar,body>.section{opacity:0}</style><!--!--><!--!--><!--!--><!--!--><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/cookieconsent/3.1.1/cookieconsent.min.css"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/lightgallery/1.6.8/css/lightgallery.min.css"><link rel="stylesheet" href="https://cdnjs.loli.net/ajax/libs/justifiedGallery/3.7.0/css/justifiedGallery.min.css"><!--!--><!--!--><script src="https://cdnjs.loli.net/ajax/libs/pace/1.0.2/pace.min.js"></script><!--!--><!--!--><meta name="generator" content="Hexo 5.4.0"></head><body class="is-2-column"><nav class="navbar navbar-main"><div class="container"><div class="navbar-brand justify-content-center"><a class="navbar-item navbar-logo" href="/"><img src="/static/img/logo_horizon.png" alt="HORIZON" height="28"></a></div><div class="navbar-menu"><div class="navbar-start"><a class="navbar-item" href="/">Home</a><a class="navbar-item" href="/archives">Archives</a><a class="navbar-item" href="/categories">Categories</a><a class="navbar-item" href="/tags">Tags</a><a class="navbar-item" href="/about">About</a></div><div class="navbar-end"><a class="navbar-item" target="_blank" rel="noopener" title="GitHub" href="https://github.com/Vincent0700"><i class="fab fa-github"></i></a><a class="navbar-item" target="_blank" rel="noopener" title="RSS" href="/atom.xml"><i class="fas fa-rss"></i></a><a class="navbar-item is-hidden-tablet catalogue" title="Catalogue" href="javascript:;"><i class="fas fa-list-ul"></i></a><a class="navbar-item search" title="Search" href="javascript:;"><i class="fas fa-search"></i></a></div></div></div></nav><section class="section"><div class="container"><div class="columns"><div class="column order-2 column-main is-8-tablet is-8-desktop is-8-widescreen"><div class="card"><div class="card-image"><span class="image is-7by3"><img class="fill" src="/static/posts/20210922_glTF2.0%E6%A0%BC%E5%BC%8F%E8%AF%A6%E8%A7%A3/struct.png" alt="glTF 2.0 格式详解"></span></div><article class="card-content article" role="article"><div class="article-meta is-size-7 is-uppercase level is-mobile"><div class="level-left"><span class="level-item">Posted&nbsp;<time dateTime="2021-09-23T15:00:00.000Z" title="9/23/2021, 11:00:00 PM">2021-09-23</time></span><span class="level-item">Updated&nbsp;<time dateTime="2021-10-12T17:30:23.108Z" title="10/13/2021, 1:30:23 AM">2021-10-13</time></span><span class="level-item"><a class="link-muted" href="/categories/%E6%8A%80%E6%9C%AF%E7%A7%AF%E7%B4%AF/">技术积累</a></span></div></div><h1 class="title is-3 is-size-4-mobile">glTF 2.0 格式详解</h1><div class="content"><p>glTF 全称 GL Transmission Format，是由现有 OpenGL 的维护组织 Khronos 推出的一种 3D 数据传输格式，常用于 WebGL 和 OpenGL。</p>
+<span id="more"></span>
+
+<h2 id="格式简介"><a href="#格式简介" class="headerlink" title="格式简介"></a>格式简介</h2><h3 id="格式特性"><a href="#格式特性" class="headerlink" title="格式特性"></a>格式特性</h3><ol>
+<li>紧凑的文件大小。glTF JSON 文件本身是明文，紧凑且解析速度快，其他大型数据（如几何和动画）都存储在二进制文件中。</li>
+<li>快速加载。glTF 的数据结构非常接近 GPU API，减少解析时间。</li>
+<li>运行时独立性。glTF 不依赖任何 3D 引擎，不指定渲染和动画以外的运行时行为。</li>
+<li>完整的 3D 场景表示。对于许多应用程序来说，从建模包中导出单个对象是不够的。通常，作者希望将整个场景（包括节点、变换、变换层次、网格、材质、相机和动画）加载到他们的应用程序中。glTF 努力保留所有这些信息以供下游应用程序使用。</li>
+<li>可扩展性。虽然最初的基础规范支持丰富的功能集，但仍有许多增长和改进的机会。glTF 定义了一种机制，允许添加通用扩展。</li>
+</ol>
+<h3 id="与其他-3D-格式对比"><a href="#与其他-3D-格式对比" class="headerlink" title="与其他 3D 格式对比"></a>与其他 3D 格式对比</h3><table>
+<thead>
+<tr>
+<th></th>
+<th>mesh</th>
+<th>材质</th>
+<th>骨骼</th>
+<th>动画</th>
+<th>场景信息</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>STL</td>
+<td>✔</td>
+<td>✖</td>
+<td>✖</td>
+<td>✖</td>
+<td>✖</td>
+</tr>
+<tr>
+<td>OBJ</td>
+<td>✔</td>
+<td>✔</td>
+<td>✖</td>
+<td>✖</td>
+<td>✖</td>
+</tr>
+<tr>
+<td>FBX</td>
+<td>✔</td>
+<td>✔</td>
+<td>✔</td>
+<td>✔</td>
+<td>✔</td>
+</tr>
+<tr>
+<td>glTF</td>
+<td>✔</td>
+<td>✔</td>
+<td>✔</td>
+<td>✔</td>
+<td>✔</td>
+</tr>
+</tbody></table>
+<h3 id="1-0-与-2-0-版本的区别"><a href="#1-0-与-2-0-版本的区别" class="headerlink" title="1.0 与 2.0 版本的区别"></a>1.0 与 2.0 版本的区别</h3><p>最主要的改动是 1.0 使用 glsl 去描述材质，而 2.0 使用了更加通用的 PBR 材质。</p>
+<h2 id="格式解析"><a href="#格式解析" class="headerlink" title="格式解析"></a>格式解析</h2><p>glTF 由 JSON 文件、bin 文件和其他外部数据（如图片等）组成，JSON 文件的根节点属性见下图：</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>数据类型</th>
+<th>描述</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>accessors</td>
+<td>accessor [1-*]</td>
+<td>An array of accessors.</td>
+</tr>
+<tr>
+<td>animations</td>
+<td>animation [1-*]    An array of keyframe animations.</td>
+<td></td>
+</tr>
+<tr>
+<td>asset</td>
+<td>object    Metadata about the glTF asset.</td>
+<td></td>
+</tr>
+<tr>
+<td>buffers</td>
+<td>buffer [1-*]    An array of buffers.</td>
+<td></td>
+</tr>
+<tr>
+<td>bufferViews</td>
+<td>bufferView [1-*]    An array of bufferViews.</td>
+<td></td>
+</tr>
+<tr>
+<td>cameras</td>
+<td>camera [1-*]</td>
+<td>An array of cameras.</td>
+</tr>
+<tr>
+<td>images</td>
+<td>image [1-*]</td>
+<td>An array of images.</td>
+</tr>
+<tr>
+<td>materials</td>
+<td>material</td>
+<td>[1-*]    An array of materials.</td>
+</tr>
+<tr>
+<td>meshes</td>
+<td>mesh [1-*]</td>
+<td>An array of meshes.</td>
+</tr>
+<tr>
+<td>nodes</td>
+<td>node [1-*]</td>
+<td>An array of nodes.</td>
+</tr>
+<tr>
+<td>samplers</td>
+<td>sampler [1-*]</td>
+<td>An array of samplers.</td>
+</tr>
+<tr>
+<td>scene</td>
+<td>integer</td>
+<td>The index of the default scene.</td>
+</tr>
+<tr>
+<td>scenes</td>
+<td>scene [1-*]</td>
+<td>An array of scenes.</td>
+</tr>
+<tr>
+<td>skins</td>
+<td>skin [1-*]</td>
+<td>An array of skins.</td>
+</tr>
+<tr>
+<td>textures</td>
+<td>texture [1-*]</td>
+<td>An array of textures.</td>
+</tr>
+<tr>
+<td>extensions</td>
+<td>object</td>
+<td>Dictionary object with extension-specific objects.</td>
+</tr>
+<tr>
+<td>extras</td>
+<td>any</td>
+<td>Application-specific data.</td>
+</tr>
+</tbody></table>
+<h3 id="asset"><a href="#asset" class="headerlink" title="asset"></a>asset</h3><p>顶级必须包含 asset 属性，其中必须包含 version 指明 glTF 的版本，还可包含如下的其他附加信息。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">&quot;asset&quot;: &#123;</span><br><span class="line">  &quot;extras&quot;: &#123;</span><br><span class="line">    &quot;author&quot;: &quot;EdwinRC (https://sketchfab.com/Edwin3D)&quot;,</span><br><span class="line">    &quot;license&quot;: &quot;CC-BY-4.0 (http://creativecommons.org/licenses/by/4.0/)&quot;,</span><br><span class="line">    &quot;source&quot;: &quot;https://sketchfab.com/3d-models/low-poly-winter-scene-2ffe1ed449414cc184078dd1e2882284&quot;,</span><br><span class="line">    &quot;title&quot;: &quot;Low Poly Winter Scene&quot;</span><br><span class="line">  &#125;,</span><br><span class="line">  &quot;generator&quot;: &quot;Sketchfab-4.86.2&quot;,</span><br><span class="line">  &quot;version&quot;: &quot;2.0&quot;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="buffers-amp-bufferViews"><a href="#buffers-amp-bufferViews" class="headerlink" title="buffers &amp; bufferViews"></a>buffers &amp; bufferViews</h3><p>二进制数据和索引视图，如下，通过 uri 指明 buffer[0] -&gt; ./scene.bin，然后再 bufferView 中通过 offset 和 length 去索引 buffer 数据。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">&quot;buffers&quot;: [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">&quot;byteLength&quot;</span>: <span class="number">8570184</span>,</span><br><span class="line">    <span class="attr">&quot;uri&quot;</span>: <span class="string">&quot;scene.bin&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">],</span><br><span class="line">&quot;bufferViews&quot;: [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">&quot;buffer&quot;</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">&quot;byteLength&quot;</span>: <span class="number">792612</span>,</span><br><span class="line">    <span class="attr">&quot;byteOffset&quot;</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;floatBufferViews&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;target&quot;</span>: <span class="number">34963</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h3 id="scene-amp-scenes"><a href="#scene-amp-scenes" class="headerlink" title="scene &amp; scenes"></a>scene &amp; scenes</h3><p>scene 表明默认加载的场景，下面的结构表示默认会加载定义在 scenes[0] 的场景。场景是由 nodes 节点构成，节点是树状结构，如下则会加载根节点为 nodes[0] 的节点。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">&quot;scene&quot;: 0,</span><br><span class="line">&quot;scenes&quot;: [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;OSG_Scene&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;nodes&quot;</span>: [<span class="number">0</span>]</span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h3 id="nodes"><a href="#nodes" class="headerlink" title="nodes"></a>nodes</h3><p>节点和层次结构。节点类似图层的概念，可以包含 mesh 或应用平移 (translation)、旋转 (rotation)、缩放 (scale) 或任意矩阵变换 (matrix)，如下图，nodes[0] 包含子节点 nodes[1]，并且应用了旋转变换，这里旋转用四元数表示。而 nodes[1] 包含了 meshes[0] 的网格数据。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&quot;nodes&quot;: [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">&quot;children&quot;</span>: [</span><br><span class="line">      <span class="number">1</span></span><br><span class="line">    ],</span><br><span class="line">    <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;RootNode (gltf orientation matrix)&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;rotation&quot;</span>: [</span><br><span class="line">      <span class="number">-0.70710678118654746</span>,</span><br><span class="line">      <span class="number">-0</span>,</span><br><span class="line">      <span class="number">-0</span>,</span><br><span class="line">      <span class="number">0.70710678118654757</span></span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">&quot;mesh&quot;</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;Cylinder.008_0&quot;</span></span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h3 id="meshes"><a href="#meshes" class="headerlink" title="meshes"></a>meshes</h3><p>网格数据是模型最重要的部分，如下所示，meshes[0] 是一个 Cylinder.008_0 的圆柱体网格。 attributes 的数据会直接传入 vertex shader，它们的含义如下：</p>
+<ul>
+<li>POSITION 顶点坐标</li>
+<li>NORMAL 法向量</li>
+<li>TANGENT 切向量</li>
+<li>COLOR_0 顶点颜色</li>
+<li>TEXCOORD_0 贴图UV，可以看出 glTF 支持多组 UV</li>
+</ul>
+<p>它们的值是 accessor 的索引，最终会取到 bufferView -&gt; buffer 中的数据。例如 POSITION 应该是 XYZ 坐标的数组，TEXCOORD_0 应该 UV 坐标的数组。</p>
+<p>mode 和 indices 涉及到图元装配，mode 是枚举类型，与 WebGL 中定义的一致：</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>取值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>POINTS</td>
+<td>0</td>
+</tr>
+<tr>
+<td>LINES</td>
+<td>1</td>
+</tr>
+<tr>
+<td>LINE_LOOP</td>
+<td>2</td>
+</tr>
+<tr>
+<td>LINE_STRIP</td>
+<td>3</td>
+</tr>
+<tr>
+<td>TRIANGLES</td>
+<td>4</td>
+</tr>
+<tr>
+<td>TRIANGLE_STRIP</td>
+<td>5</td>
+</tr>
+<tr>
+<td>TRIANGLE_FAN</td>
+<td>6</td>
+</tr>
+</tbody></table>
+<p>所以这里 indices 为三角形 mesh 顶点的索引数组，数据也是通过 accessor 索引。<br>material 是材质的索引，存放在 materials[0]。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line">&quot;meshes&quot;: [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;Cylinder.008_0&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;primitives&quot;</span>: [</span><br><span class="line">      &#123;</span><br><span class="line">        <span class="attr">&quot;attributes&quot;</span>: &#123;</span><br><span class="line">          <span class="attr">&quot;COLOR_0&quot;</span>: <span class="number">3</span>,</span><br><span class="line">          <span class="attr">&quot;NORMAL&quot;</span>: <span class="number">1</span>,</span><br><span class="line">          <span class="attr">&quot;POSITION&quot;</span>: <span class="number">0</span>,</span><br><span class="line">          <span class="attr">&quot;TANGENT&quot;</span>: <span class="number">2</span>,</span><br><span class="line">          <span class="attr">&quot;TEXCOORD_0&quot;</span>: <span class="number">4</span></span><br><span class="line">        &#125;,</span><br><span class="line">        <span class="attr">&quot;indices&quot;</span>: <span class="number">5</span>,</span><br><span class="line">        <span class="attr">&quot;material&quot;</span>: <span class="number">0</span>,</span><br><span class="line">        <span class="attr">&quot;mode&quot;</span>: <span class="number">4</span></span><br><span class="line">      &#125;</span><br><span class="line">    ]</span><br><span class="line">  &#125;,</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h3 id="accessors"><a href="#accessors" class="headerlink" title="accessors"></a>accessors</h3><p>访问器。是 glTF 特有的访问数据的结构，它关联了 bufferView 声明的数据切片，指明了数据类型，同时也附带了额外信息，如 min、max、count 等。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&quot;accessors&quot;: [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">&quot;bufferView&quot;</span>: <span class="number">2</span>,</span><br><span class="line">    <span class="attr">&quot;componentType&quot;</span>: <span class="number">5126</span>,</span><br><span class="line">    <span class="attr">&quot;count&quot;</span>: <span class="number">25327</span>,</span><br><span class="line">    <span class="attr">&quot;max&quot;</span>: [<span class="number">15.562509536743164</span>, <span class="number">-45.877700805664062</span>, <span class="number">30.865560531616211</span>],</span><br><span class="line">    <span class="attr">&quot;min&quot;</span>: [<span class="number">-31.794599533081055</span>, <span class="number">-90.910537719726562</span>, <span class="number">-38.811481475830078</span>],</span><br><span class="line">    <span class="attr">&quot;type&quot;</span>: <span class="string">&quot;VEC3&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">  <span class="comment">// ...</span></span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h4 id="type"><a href="#type" class="headerlink" title="type"></a>type</h4><table>
+<thead>
+<tr>
+<th>类型</th>
+<th>含义</th>
+<th>元素数量</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>SCALAR</td>
+<td>标量</td>
+<td>1</td>
+</tr>
+<tr>
+<td>VEC2</td>
+<td>元向量，常用于描述 uv</td>
+<td>2</td>
+</tr>
+<tr>
+<td>VEC3</td>
+<td>3元向量，常用于描述 xyz 坐标或 rgb 颜色</td>
+<td>3</td>
+</tr>
+<tr>
+<td>VEC4</td>
+<td>4元向量，常用于描述四元数或 rgba 颜色</td>
+<td>4</td>
+</tr>
+<tr>
+<td>MAT2</td>
+<td>2阶矩阵</td>
+<td>4</td>
+</tr>
+<tr>
+<td>MAT3</td>
+<td>3阶矩阵</td>
+<td>9</td>
+</tr>
+<tr>
+<td>MAT4</td>
+<td>4阶矩阵</td>
+<td>16</td>
+</tr>
+</tbody></table>
+<h3 id="materials"><a href="#materials" class="headerlink" title="materials"></a>materials</h3><p>材质。glTF 2.0 支持了 PBR 材质，PBR (Physically Based Rendering) 的含义是基于物理正确的方式来计算灯光与材质，也就是说 PBR 材质的渲染基于物理引擎而非渲染器。目前 PBR 材质已经被各种图形引擎和建模软件所支持，是一种通用的材质规范，因此也非常符合 glTF 的理念。具体 PBR 相关概念可以参考这篇文章 <a target="_blank" rel="noopener" href="https://discoverthreejs.com/book/first-steps/physically-based-rendering/">Physically Based Rendering and Lighting</a></p>
+<p>下面的例子定义了一个 PBR 材质，首先 doubleSided 表明了它是双面渲染的，然后 baseColorFactor 定义了它的基本颜色是 rgba(1, 1, 1, 1) 的白色，baseColorTexture 定义了贴图的索引和 uv，metallicFactor 描述了金属性，roughnessFactor 描述了粗糙程度。</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">&quot;materials&quot;: [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">&quot;doubleSided&quot;</span>: <span class="literal">true</span>,</span><br><span class="line">    <span class="attr">&quot;name&quot;</span>: <span class="string">&quot;Main&quot;</span>,</span><br><span class="line">    <span class="attr">&quot;pbrMetallicRoughness&quot;</span>: &#123;</span><br><span class="line">      <span class="attr">&quot;baseColorFactor&quot;</span>: [</span><br><span class="line">        <span class="number">1</span>,</span><br><span class="line">        <span class="number">1</span>,</span><br><span class="line">        <span class="number">1</span>,</span><br><span class="line">        <span class="number">1</span></span><br><span class="line">      ],</span><br><span class="line">      <span class="attr">&quot;baseColorTexture&quot;</span>: &#123;</span><br><span class="line">        <span class="attr">&quot;index&quot;</span>: <span class="number">0</span>,</span><br><span class="line">        <span class="attr">&quot;texCoord&quot;</span>: <span class="number">0</span></span><br><span class="line">      &#125;,</span><br><span class="line">      <span class="attr">&quot;metallicFactor&quot;</span>: <span class="number">0</span>,</span><br><span class="line">      <span class="attr">&quot;roughnessFactor&quot;</span>: <span class="number">0.6</span></span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br></pre></td></tr></table></figure>
+
+<h3 id="textures-amp-images"><a href="#textures-amp-images" class="headerlink" title="textures &amp; images"></a>textures &amp; images</h3><p>贴图。texture 对象的 source 和 sampler 关联了图片(images) 和采样器(samplers) 的索引。images 通过 uri 关联外部图片文件。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line">&quot;textures&quot;: [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">&quot;sampler&quot;</span>: <span class="number">0</span>,</span><br><span class="line">    <span class="attr">&quot;source&quot;</span>: <span class="number">0</span></span><br><span class="line">  &#125;</span><br><span class="line">],</span><br><span class="line">&quot;images&quot;: [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">&quot;uri&quot;</span>: <span class="string">&quot;textures/Main_baseColor.png&quot;</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h3 id="samplers"><a href="#samplers" class="headerlink" title="samplers"></a>samplers</h3><p>采样器。描述了纹理映射的方式。其参数 magFilter、minFilter、wrapS、wrapT 都是枚举类型。</p>
+<figure class="highlight"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">&quot;samplers&quot;: [</span><br><span class="line">  &#123;</span><br><span class="line">    <span class="attr">&quot;magFilter&quot;</span>: <span class="number">9729</span>,</span><br><span class="line">    <span class="attr">&quot;minFilter&quot;</span>: <span class="number">9987</span>,</span><br><span class="line">    <span class="attr">&quot;wrapS&quot;</span>: <span class="number">10497</span>,</span><br><span class="line">    <span class="attr">&quot;wrapT&quot;</span>: <span class="number">10497</span></span><br><span class="line">  &#125;</span><br><span class="line">]</span><br></pre></td></tr></table></figure>
+
+<h4 id="magFilter"><a href="#magFilter" class="headerlink" title="magFilter"></a>magFilter</h4><p>拉伸纹理，表示三角面大而纹理小的情况，取值如下</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>取值</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NEAREST</td>
+<td>9728</td>
+<td>取临近点的颜色，对应 GL_NEAREST</td>
+</tr>
+<tr>
+<td>LINEAR</td>
+<td>9729</td>
+<td>线性插值，对应 GL_LINEAR</td>
+</tr>
+</tbody></table>
+<h4 id="minFilter"><a href="#minFilter" class="headerlink" title="minFilter"></a>minFilter</h4><p>压缩纹理，表示三角面小而纹理大的情况，增加 mipmap 的情况，概念和上面类似，取值如下</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>取值</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>NEAREST</td>
+<td>9728</td>
+</tr>
+<tr>
+<td>LINEAR</td>
+<td>9729</td>
+</tr>
+<tr>
+<td>NEAREST_MIPMAP_NEAREST</td>
+<td>9984</td>
+</tr>
+<tr>
+<td>LINEAR_MIPMAP_NEAREST</td>
+<td>9985</td>
+</tr>
+<tr>
+<td>NEAREST_MIPMAP_LINEA</td>
+<td>9986</td>
+</tr>
+<tr>
+<td>LINEAR_MIPMAP_LINEAR</td>
+<td>9987</td>
+</tr>
+</tbody></table>
+<h4 id="wrapS"><a href="#wrapS" class="headerlink" title="wrapS"></a>wrapS</h4><p>横轴 wrap mode</p>
+<table>
+<thead>
+<tr>
+<th>类型</th>
+<th>取值</th>
+<th>示例</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>CLAMP_TO_EDGE</td>
+<td>33071</td>
+<td><img src="/static/posts/20210922_glTF2.0格式详解/clamp_to_edge.png" style="width: 200px" /></td>
+</tr>
+<tr>
+<td>MIRRORED_REPEAT</td>
+<td>33648</td>
+<td><img src="/static/posts/20210922_glTF2.0格式详解/mirrored_repeat.png" style="width: 200px" /></td>
+</tr>
+<tr>
+<td>REPEAT</td>
+<td>10497</td>
+<td><img src="/static/posts/20210922_glTF2.0格式详解/repeat.png" style="width: 200px" /></td>
+</tr>
+</tbody></table>
+<h4 id="wrapT"><a href="#wrapT" class="headerlink" title="wrapT"></a>wrapT</h4><p>纵轴 wrap mode，取值同 wrapS</p>
+<h2 id="最后总结"><a href="#最后总结" class="headerlink" title="最后总结"></a>最后总结</h2><p>最后附一张官方给出的 glTF 格式的属性节点关系图，便于理清各个节点的映射关系，如果还有细节的地方不明白，可以参考 <a target="_blank" rel="noopener" href="https://www.khronos.org/registry/glTF/specs/2.0/glTF-2.0.html">glTF 2.0 官方文档</a></p>
+<p><img src="/static/posts/20210922_glTF2.0%E6%A0%BC%E5%BC%8F%E8%AF%A6%E8%A7%A3/flow.png"></p>
+</div><div class="article-licensing box"><div class="licensing-title"><p>glTF 2.0 格式详解</p><p><a href="https://vincent0700.com/2021/09/23/20210922_glTF2.0格式详解/">https://vincent0700.com/2021/09/23/20210922_glTF2.0格式详解/</a></p></div><div class="licensing-meta level is-mobile"><div class="level-left"><div class="level-item is-narrow"><div><h6>Posted on</h6><p>2021-09-23</p></div></div><div class="level-item is-narrow"><div><h6>Updated on</h6><p>2021-10-13</p></div></div><div class="level-item is-narrow"><div><h6>Licensed under</h6><p><a class="icon" rel="noopener" target="_blank" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a><a class="icon" rel="noopener" target="_blank" title="Attribution" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a><a class="icon" rel="noopener" target="_blank" title="Noncommercial" href="https://creativecommons.org/licenses/by-nc/4.0/"><i class="fab fa-creative-commons-nc"></i></a></p></div></div></div></div></div><div class="article-tags is-size-7 mb-4"><span class="mr-2">#</span><a class="link-muted mr-2" rel="tag" href="/tags/WebGL/">WebGL</a></div><div class="sharethis-inline-share-buttons"></div><script src="https://platform-api.sharethis.com/js/sharethis.js#property=6042e90bcaff460011c5893a&amp;product=inline-share-buttons" defer></script></article></div><div class="card"><div class="card-content"><h3 class="menu-label has-text-centered">Like this article? Support the author with</h3><div class="buttons is-centered"><a class="button donate" data-type="wechat"><span class="icon is-small"><i class="fab fa-weixin"></i></span><span>Wechat</span><span class="qrcode"><img src="/static/img/qrcode_wechat_pay.jpg" alt="Wechat"></span></a></div></div></div><nav class="post-navigation mt-4 level is-mobile"><div class="level-end"><a class="article-nav-next level level-item link-muted" href="/2021/09/11/20210911_%E7%94%A8TS%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E5%AE%9E%E7%8E%B0%E5%A4%A7%E6%95%B0%E5%8A%A0%E6%B3%95/"><span class="level-item">用 TS 类型系统实现大数加法</span><i class="level-item fas fa-chevron-right"></i></a></div></nav><div class="card"><div class="card-content"><h3 class="title is-5">Comments</h3><div id="disqus_thread"><noscript>Please enable JavaScript to view the <a target="_blank" rel="noopener" href="//disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript></div><script>var disqus_config = function () {
+            this.page.url = 'https://vincent0700.com/2021/09/23/20210922_glTF2.0%E6%A0%BC%E5%BC%8F%E8%AF%A6%E8%A7%A3/';
+            this.page.identifier = '2021/09/23/20210922_glTF2.0格式详解/';
+        };
+        (function() {
+            var d = document, s = d.createElement('script');  
+            s.src = '//' + 'horizon-3' + '.disqus.com/embed.js';
+            s.setAttribute('data-timestamp', +new Date());
+            (d.head || d.body).appendChild(s);
+        })();</script></div></div></div><div class="column column-left is-4-tablet is-4-desktop is-4-widescreen  order-1 is-sticky"><div class="card widget" id="toc" data-type="toc"><div class="card-content"><div class="menu"><h3 class="menu-label">Catalogue</h3><ul class="menu-list"><li><a class="level is-mobile" href="#格式简介"><span class="level-left"><span class="level-item">1</span><span class="level-item">格式简介</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#格式特性"><span class="level-left"><span class="level-item">1.1</span><span class="level-item">格式特性</span></span></a></li><li><a class="level is-mobile" href="#与其他-3D-格式对比"><span class="level-left"><span class="level-item">1.2</span><span class="level-item">与其他 3D 格式对比</span></span></a></li><li><a class="level is-mobile" href="#1-0-与-2-0-版本的区别"><span class="level-left"><span class="level-item">1.3</span><span class="level-item">1.0 与 2.0 版本的区别</span></span></a></li></ul></li><li><a class="level is-mobile" href="#格式解析"><span class="level-left"><span class="level-item">2</span><span class="level-item">格式解析</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#asset"><span class="level-left"><span class="level-item">2.1</span><span class="level-item">asset</span></span></a></li><li><a class="level is-mobile" href="#buffers-amp-bufferViews"><span class="level-left"><span class="level-item">2.2</span><span class="level-item">buffers &amp; bufferViews</span></span></a></li><li><a class="level is-mobile" href="#scene-amp-scenes"><span class="level-left"><span class="level-item">2.3</span><span class="level-item">scene &amp; scenes</span></span></a></li><li><a class="level is-mobile" href="#nodes"><span class="level-left"><span class="level-item">2.4</span><span class="level-item">nodes</span></span></a></li><li><a class="level is-mobile" href="#meshes"><span class="level-left"><span class="level-item">2.5</span><span class="level-item">meshes</span></span></a></li><li><a class="level is-mobile" href="#accessors"><span class="level-left"><span class="level-item">2.6</span><span class="level-item">accessors</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#type"><span class="level-left"><span class="level-item">2.6.1</span><span class="level-item">type</span></span></a></li></ul></li><li><a class="level is-mobile" href="#materials"><span class="level-left"><span class="level-item">2.7</span><span class="level-item">materials</span></span></a></li><li><a class="level is-mobile" href="#textures-amp-images"><span class="level-left"><span class="level-item">2.8</span><span class="level-item">textures &amp; images</span></span></a></li><li><a class="level is-mobile" href="#samplers"><span class="level-left"><span class="level-item">2.9</span><span class="level-item">samplers</span></span></a><ul class="menu-list"><li><a class="level is-mobile" href="#magFilter"><span class="level-left"><span class="level-item">2.9.1</span><span class="level-item">magFilter</span></span></a></li><li><a class="level is-mobile" href="#minFilter"><span class="level-left"><span class="level-item">2.9.2</span><span class="level-item">minFilter</span></span></a></li><li><a class="level is-mobile" href="#wrapS"><span class="level-left"><span class="level-item">2.9.3</span><span class="level-item">wrapS</span></span></a></li><li><a class="level is-mobile" href="#wrapT"><span class="level-left"><span class="level-item">2.9.4</span><span class="level-item">wrapT</span></span></a></li></ul></li></ul></li><li><a class="level is-mobile" href="#最后总结"><span class="level-left"><span class="level-item">3</span><span class="level-item">最后总结</span></span></a></li></ul></div></div><script src="/js/toc.js" defer></script></div><div class="card widget" data-type="links"><div class="card-content"><div class="menu"><h3 class="menu-label">Links</h3><ul class="menu-list"><li><a class="level is-mobile" href="https://archive.vincent0700.com" target="_blank" rel="noopener"><span class="level-left"><span class="level-item">Old Blog</span></span><span class="level-right"><span class="level-item tag">archive.vincent0700.com</span></span></a></li></ul></div></div></div><div class="card widget" data-type="categories"><div class="card-content"><div class="menu"><h3 class="menu-label">Categories</h3><ul class="menu-list"><li><a class="level is-mobile" href="/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/"><span class="level-start"><span class="level-item">工具使用</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/categories/%E6%8A%80%E6%9C%AF%E7%A7%AF%E7%B4%AF/"><span class="level-start"><span class="level-item">技术积累</span></span><span class="level-end"><span class="level-item tag">3</span></span></a></li><li><a class="level is-mobile" href="/categories/%E7%BD%91%E7%BB%9C%E5%BB%BA%E8%AE%BE/"><span class="level-start"><span class="level-item">网络建设</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li></ul></div></div></div><div class="card widget" data-type="tags"><div class="card-content"><div class="menu"><h3 class="menu-label">Tags</h3><div class="field is-grouped is-grouped-multiline"><div class="control"><a class="tags has-addons" href="/tags/Javascript/"><span class="tag">Javascript</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/OpenWrt/"><span class="tag">OpenWrt</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/TC39/"><span class="tag">TC39</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Typescript/"><span class="tag">Typescript</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/Vue/"><span class="tag">Vue</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/WebGL/"><span class="tag">WebGL</span><span class="tag">1</span></a></div><div class="control"><a class="tags has-addons" href="/tags/%E8%BD%AF%E8%B7%AF%E7%94%B1/"><span class="tag">软路由</span><span class="tag">1</span></a></div></div></div></div></div><div class="card widget" data-type="recent-posts"><div class="card-content"><h3 class="menu-label">Recents</h3><article class="media"><figure class="media-left"><a class="image" href="/2021/09/23/20210922_glTF2.0%E6%A0%BC%E5%BC%8F%E8%AF%A6%E8%A7%A3/"><img src="/static/logo/glTF.png" alt="glTF 2.0 格式详解"></a></figure><div class="media-content"><p class="date"><time dateTime="2021-09-23T15:00:00.000Z">2021-09-23</time></p><p class="title"><a href="/2021/09/23/20210922_glTF2.0%E6%A0%BC%E5%BC%8F%E8%AF%A6%E8%A7%A3/">glTF 2.0 格式详解</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF%E7%A7%AF%E7%B4%AF/">技术积累</a></p></div></article><article class="media"><figure class="media-left"><a class="image" href="/2021/09/11/20210911_%E7%94%A8TS%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E5%AE%9E%E7%8E%B0%E5%A4%A7%E6%95%B0%E5%8A%A0%E6%B3%95/"><img src="/static/logo/ts.png" alt="用 TS 类型系统实现大数加法"></a></figure><div class="media-content"><p class="date"><time dateTime="2021-09-11T15:00:00.000Z">2021-09-11</time></p><p class="title"><a href="/2021/09/11/20210911_%E7%94%A8TS%E7%B1%BB%E5%9E%8B%E7%B3%BB%E7%BB%9F%E5%AE%9E%E7%8E%B0%E5%A4%A7%E6%95%B0%E5%8A%A0%E6%B3%95/">用 TS 类型系统实现大数加法</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF%E7%A7%AF%E7%B4%AF/">技术积累</a></p></div></article><article class="media"><figure class="media-left"><a class="image" href="/2021/05/26/20210526_Vue3%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/"><img src="/static/logo/vue.png" alt="Vue 源码阅读"></a></figure><div class="media-content"><p class="date"><time dateTime="2021-05-26T13:00:00.000Z">2021-05-26</time></p><p class="title"><a href="/2021/05/26/20210526_Vue3%E6%BA%90%E7%A0%81%E9%98%85%E8%AF%BB/">Vue 源码阅读</a></p><p class="categories"><a href="/categories/%E6%8A%80%E6%9C%AF%E7%A7%AF%E7%B4%AF/">技术积累</a></p></div></article><article class="media"><figure class="media-left"><a class="image" href="/2021/03/11/20210311_%E4%BD%BF%E7%94%A8Test262%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%A7%BF%E5%8A%BF/"><img src="/static/logo/tc39.png" alt="使用 Test262 的正确姿势"></a></figure><div class="media-content"><p class="date"><time dateTime="2021-03-11T13:00:00.000Z">2021-03-11</time></p><p class="title"><a href="/2021/03/11/20210311_%E4%BD%BF%E7%94%A8Test262%E7%9A%84%E6%AD%A3%E7%A1%AE%E5%A7%BF%E5%8A%BF/">使用 Test262 的正确姿势</a></p><p class="categories"><a href="/categories/%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/">工具使用</a></p></div></article><article class="media"><figure class="media-left"><a class="image" href="/2021/03/08/20210305_%E8%BD%AF%E8%B7%AF%E7%94%B1R4S%E8%B8%A9%E5%9D%91/"><img src="/static/posts/20210305_%E8%BD%AF%E8%B7%AF%E7%94%B1R4S%E8%B8%A9%E5%9D%91/r4s_thumbnail.png" alt="家庭网络改造，软路由 R4S 踩坑"></a></figure><div class="media-content"><p class="date"><time dateTime="2021-03-08T13:00:00.000Z">2021-03-08</time></p><p class="title"><a href="/2021/03/08/20210305_%E8%BD%AF%E8%B7%AF%E7%94%B1R4S%E8%B8%A9%E5%9D%91/">家庭网络改造，软路由 R4S 踩坑</a></p><p class="categories"><a href="/categories/%E7%BD%91%E7%BB%9C%E5%BB%BA%E8%AE%BE/">网络建设</a></p></div></article></div></div><div class="card widget" data-type="archives"><div class="card-content"><div class="menu"><h3 class="menu-label">Archives</h3><ul class="menu-list"><li><a class="level is-mobile" href="/archives/2021/09/"><span class="level-start"><span class="level-item">September 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/05/"><span class="level-start"><span class="level-item">May 2021</span></span><span class="level-end"><span class="level-item tag">1</span></span></a></li><li><a class="level is-mobile" href="/archives/2021/03/"><span class="level-start"><span class="level-item">March 2021</span></span><span class="level-end"><span class="level-item tag">2</span></span></a></li></ul></div></div></div></div><!--!--></div></div></section><footer class="footer"><div class="container"><div class="level"><div class="level-start"><a class="footer-logo is-block mb-2" href="/"><img src="/static/img/logo_horizon.png" alt="HORIZON" height="28"></a><p class="is-size-7"><span>&copy; 2021 HORIZON</span>  Powered by <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a> &amp; <a href="https://github.com/ppoffice/hexo-theme-icarus" target="_blank" rel="noopener">Icarus</a></p></div><div class="level-end"><div class="field has-addons"><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Creative Commons" href="https://creativecommons.org/"><i class="fab fa-creative-commons"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Attribution 4.0 International" href="https://creativecommons.org/licenses/by/4.0/"><i class="fab fa-creative-commons-by"></i></a></p><p class="control"><a class="button is-transparent is-large" target="_blank" rel="noopener" title="Download on GitHub" href="https://github.com/Vincent0700/vincent0700.com"><i class="fab fa-github"></i></a></p></div></div></div></div></footer><script src="https://cdnjs.loli.net/ajax/libs/jquery/3.3.1/jquery.min.js"></script><script src="https://cdnjs.loli.net/ajax/libs/moment.js/2.22.2/moment-with-locales.min.js"></script><script>moment.locale("en");</script><script>var IcarusThemeSettings = {
+            article: {
+                highlight: {
+                    clipboard: false,
+                    fold: ''
+                }
+            }
+        };</script><script src="/js/column.js"></script><script src="/js/animation.js"></script><a id="back-to-top" title="Back to top" href="javascript:;"><i class="fas fa-chevron-up"></i></a><script src="/js/back_to_top.js" defer></script><!--!--><!--!--><!--!--><script src="https://cdnjs.loli.net/ajax/libs/cookieconsent/3.1.1/cookieconsent.min.js" defer></script><script>window.addEventListener("load", () => {
+      window.cookieconsent.initialise({
+        type: "info",
+        theme: "edgeless",
+        static: false,
+        position: "bottom-left",
+        content: {
+          message: "This website uses cookies to improve your experience.",
+          dismiss: "Got it!",
+          allow: "Allow cookies",
+          deny: "Decline",
+          link: "Learn more",
+          policy: "Cookie Policy",
+          href: "https://www.cookiesandyou.com/",
+        },
+        palette: {
+          popup: {
+            background: "#edeff5",
+            text: "#838391"
+          },
+          button: {
+            background: "#4b81e8"
+          },
+        },
+      });
+    });</script><script src="https://cdnjs.loli.net/ajax/libs/lightgallery/1.6.8/js/lightgallery.min.js" defer></script><script src="https://cdnjs.loli.net/ajax/libs/justifiedGallery/3.7.0/js/jquery.justifiedGallery.min.js" defer></script><script>window.addEventListener("load", () => {
+            if (typeof $.fn.lightGallery === 'function') {
+                $('.article').lightGallery({ selector: '.gallery-item' });
+            }
+            if (typeof $.fn.justifiedGallery === 'function') {
+                if ($('.justified-gallery > p > .gallery-item').length) {
+                    $('.justified-gallery > p > .gallery-item').unwrap();
+                }
+                $('.justified-gallery').justifiedGallery();
+            }
+        });</script><!--!--><!--!--><!--!--><!--!--><!--!--><script src="/js/main.js" defer></script><div class="searchbox"><div class="searchbox-container"><div class="searchbox-header"><div class="searchbox-input-container"><input class="searchbox-input" type="text" placeholder="Type something..."></div><a class="searchbox-close" href="javascript:;">×</a></div><div class="searchbox-body"></div></div></div><script src="/js/insight.js" defer></script><script>document.addEventListener('DOMContentLoaded', function () {
+            loadInsight({"contentUrl":"/content.json"}, {"hint":"Type something...","untitled":"(Untitled)","posts":"Posts","pages":"Pages","categories":"Categories","tags":"Tags"});
+        });</script></body></html>
